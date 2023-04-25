@@ -6,12 +6,13 @@ import (
 	grpclogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"os"
 	"time"
 	"try-gcp-grpc/services"
-	"try-gcp-grpc/services/pb"
+	"try-gcp-grpc/services/bookstore"
 )
 
 func main() {
@@ -35,7 +36,8 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	service := services.NewHelloService()
-	pb.RegisterHelloServiceServer(server, service)
+	bookstore.RegisterBookStoreServiceServer(server, service)
+	reflection.Register(server)
 	log.Println("grpc server started")
 	log.Fatal(server.Serve(l))
 }

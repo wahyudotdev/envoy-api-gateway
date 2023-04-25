@@ -1,0 +1,27 @@
+syntax = "proto3";
+package bookstore;
+option go_package = "services/bookstore";
+
+message CreateBookRequest {
+  string title = 1;
+  string content = 2;
+}
+
+message Book {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message GetBookListRequest {
+
+}
+
+message BookList {
+  repeated Book list = 1;
+}
+
+service BookStoreService {
+  rpc CreateBook(CreateBookRequest) returns (Book) {}
+  rpc GetBook(GetBookListRequest) returns (BookList) {}
+}
