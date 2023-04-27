@@ -5,7 +5,7 @@ services:
     image: gcr.io/endpoints-release/endpoints-runtime:2
     command:
       - --service=bookstore.endpoints.wahyudotdev-research.cloud.goog
-      - --service_account_key=/keys/service-account-key.json
+#      - --service_account_key=/keys/service-account-key.json
       - --rollout_strategy=managed
       - --backend=grpc://api:3000
     ports:
