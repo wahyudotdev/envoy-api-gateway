@@ -5,10 +5,13 @@ name: bookstore.endpoints.wahyudotdev-research.cloud.goog
 
 title: Bookstore gRPC API
 apis:
-  - name: endpoints.examples.bookstore.BookStoreService
+  - name: bookstore.BookStoreService
 
 usage:
   rules:
     # ListShelves methods can be called without an API Key.
     - selector: bookstore.BookStoreService.GetBook
+      allow_unregistered_calls: true
+
+    - selector: bookstore.BookStoreService.CreateBook
       allow_unregistered_calls: true
