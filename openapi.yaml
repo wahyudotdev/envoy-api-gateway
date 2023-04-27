@@ -1,8 +1,8 @@
 swagger: "2.0"
 info:
-  title: Try Endpoint
+  title: Bookstore gRPC API
   version: "1.0"
-basePath: "/api"
+basePath: "/v1"
 schemes:
   - "http"
 host: "bookstore.endpoints.wahyudotdev-research.cloud.goog"
@@ -12,10 +12,16 @@ x-google-endpoints:
     target: "35.232.6.24"
 
 paths:
-  /echo:
+  /books:
     get:
-      description: "Echo timestamp"
-      operationId: "echo"
+      description: "Get books list"
+      operationId: "GetBook"
+      responses:
+        200:
+          description: "success"
+    post:
+      description: "Create book"
+      operationId: "CreateBook"
       responses:
         200:
           description: "success"

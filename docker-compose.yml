@@ -10,8 +10,10 @@ services:
       - --http_port=8082
       - --http2_port=8083
       - --service_account_key=/keys/service-account-key.json
+      - --cors_preset=basic
+      - --cors_allow_origin=*
     ports:
-      - "8082:8082"
+      - "80:8082"
       - "8083:8083"
     volumes:
       - ./keys:/keys
