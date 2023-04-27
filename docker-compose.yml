@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  esp:
+    image: gcr.io/endpoints-release/endpoints-runtime:2
+    command:
+      - --service=echo-api.endpoints.wahyudotdev-research.cloud.goog
+      - --rollout_strategy=managed
+      - --backend=grpc://api:3000
+    ports:
+      - "80:8080"
+
+  api:
+    build: .
+    environment:
+      PORT: 3000

@@ -1,6 +1,7 @@
 syntax = "proto3";
 package bookstore;
 option go_package = "services/bookstore";
+import "google/api/annotations.proto";
 
 message CreateBookRequest {
   string title = 1;
