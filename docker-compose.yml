@@ -4,11 +4,16 @@ services:
   esp:
     image: gcr.io/endpoints-release/endpoints-runtime:2
     command:
-      - --service=echo-api.endpoints.wahyudotdev-research.cloud.goog
+      - --service=bookstore.endpoints.wahyudotdev-research.cloud.goog
       - --rollout_strategy=managed
       - --backend=grpc://api:3000
+      - --http_port=8082
+      - --http2_port=8083
+      - --service_account_key=/keys/service-account-key.json
     ports:
       - "80:8080"
+    volumes:
+      - ./keys:/keys
 
   api:
     build: .

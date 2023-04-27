@@ -10,5 +10,5 @@ apis:
 usage:
   rules:
     # ListShelves methods can be called without an API Key.
-    - selector: endpoints.examples.bookstore.BookStoreService.GetBook
+    - selector: bookstore.BookStoreService.GetBook
       allow_unregistered_calls: true
