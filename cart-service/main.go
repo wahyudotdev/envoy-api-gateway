@@ -1,6 +1,8 @@
 package main
 
 import (
+	"cart-service/services"
+	"cart-service/services/cart"
 	"fmt"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpclogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
@@ -11,8 +13,6 @@ import (
 	"net"
 	"os"
 	"time"
-	"try-gcp-grpc/services"
-	"try-gcp-grpc/services/bookstore"
 )
 
 func main() {
@@ -35,9 +35,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	service := services.NewHelloService()
-	bookstore.RegisterBookStoreServiceServer(server, service)
+	service := services.NewCartService()
+	cart.RegisterCartServiceServer(server, service)
 	reflection.Register(server)
-	log.Println("grpc server started")
+	log.Println("cart service started")
 	log.Fatal(server.Serve(l))
 }

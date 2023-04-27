@@ -1,12 +1,12 @@
 version: '3.9'
 
 services:
-  esp:
+  bookstore-esp:
     image: gcr.io/endpoints-release/endpoints-runtime:1
     command:
       - --service=bookstore.endpoints.wahyudotdev-research.cloud.goog
       - --rollout_strategy=managed
-      - --backend=grpc://api:3000
+      - --backend=grpc://bookstore:3000
       - --http_port=8082
       - --http2_port=8083
       - --service_account_key=/keys/service-account-key.json
@@ -16,7 +16,27 @@ services:
     volumes:
       - ./keys:/keys
 
-  api:
-    build: .
+  bookstore:
+    build: bookstore-service
+    environment:
+      PORT: 3000
+
+  cart-esp:
+    image: gcr.io/endpoints-release/endpoints-runtime:1
+    command:
+      - --service=bookstore.endpoints.wahyudotdev-research.cloud.goog
+      - --rollout_strategy=managed
+      - --backend=grpc://cart:3000
+      - --http_port=8082
+      - --http2_port=8083
+      - --service_account_key=/keys/service-account-key.json
+    ports:
+      - "8084:8082"
+      - "8085:8083"
+    volumes:
+      - ./keys:/keys
+
+  cart:
+    build: cart-service
     environment:
       PORT: 3000

@@ -1,0 +1,39 @@
+syntax = "proto3";
+package cart;
+option go_package = "services/cart";
+import "google/api/annotations.proto";
+
+message AddToCartRequest {
+  string title = 1;
+  string content = 2;
+}
+
+message Item {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message GetCartRequest {
+
+}
+
+message CartList {
+  repeated Item list = 1;
+}
+
+service CartService {
+
+  rpc AddToCart(AddToCartRequest) returns (Item) {
+    option (google.api.http) = {
+      post: "/v1/carts",
+      body: "*"
+    };
+  }
+
+  rpc GetCart(GetCartRequest) returns (CartList) {
+    option (google.api.http) = {
+      get: "/v1/carts"
+    };
+  }
+}

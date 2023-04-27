@@ -1,9 +1,9 @@
 package services
 
 import (
+	"bookstore-service/services/bookstore"
 	"context"
 	"github.com/google/uuid"
-	"try-gcp-grpc/services/bookstore"
 )
 
 type BookStoreServiceImpl struct {

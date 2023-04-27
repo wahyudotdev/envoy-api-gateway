@@ -6,6 +6,7 @@ name: bookstore.endpoints.wahyudotdev-research.cloud.goog
 title: Bookstore gRPC API
 apis:
   - name: bookstore.BookStoreService
+  - name: cart.CartService
 
 usage:
   rules:
@@ -14,4 +15,10 @@ usage:
       allow_unregistered_calls: true
 
     - selector: bookstore.BookStoreService.CreateBook
+      allow_unregistered_calls: true
+
+    - selector: cart.CartService.AddToCart
+      allow_unregistered_calls: true
+
+    - selector: cart.CartService.GetCart
       allow_unregistered_calls: true

@@ -1,4 +1,4 @@
-module try-gcp-grpc
+module bookstore-service
 
 go 1.19
 
