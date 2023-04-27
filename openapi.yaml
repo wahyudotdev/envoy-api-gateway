@@ -1,0 +1,21 @@
+swagger: "2.0"
+info:
+  title: Try Endpoint
+  version: "1.0"
+basePath: "/api"
+schemes:
+  - "http"
+host: "bookstore.endpoints.wahyudotdev-research.cloud.goog"
+
+x-google-endpoints:
+  - name: "bookstore.endpoints.wahyudotdev-research.cloud.goog"
+    target: "35.232.6.24"
+
+paths:
+  /echo:
+    get:
+      description: "Echo timestamp"
+      operationId: "echo"
+      responses:
+        200:
+          description: "success"
