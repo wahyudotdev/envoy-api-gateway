@@ -13,7 +13,7 @@ services:
       - --cors_preset=basic
       - --cors_allow_origin=*
     ports:
-      - "80:8082"
+      - "8082:8082"
       - "8083:8083"
     volumes:
       - ./keys:/keys
