@@ -23,6 +23,16 @@ message BookList {
 }
 
 service BookStoreService {
-  rpc CreateBook(CreateBookRequest) returns (Book) {}
-  rpc GetBook(GetBookListRequest) returns (BookList) {}
+  rpc CreateBook(CreateBookRequest) returns (Book) {
+    option (google.api.http) = {
+      post: "/v1/books",
+      body: "*"
+    };
+  }
+
+  rpc GetBook(GetBookListRequest) returns (BookList) {
+    option (google.api.http) = {
+      get: "/v1/books"
+    };
+  }
 }
