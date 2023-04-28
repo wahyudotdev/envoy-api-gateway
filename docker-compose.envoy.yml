@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  envoy:
+    image: envoyproxy/envoy:tools-v1.26-latest
+    container_name: envoy
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./envoy/api_descriptor.pb:/etc/envoy/api_descriptor.pb
+    command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
+
+  bookstore-service:
+    image: wahyudotdev/bookstore-grpc
+    container_name: bookstore-grpc
+    environment:
+      PORT: "3000"
+
+  cart-service:
+    image: wahyudotdev/cart-grpc
+    container_name: cart-grpc
+    environment:
+      PORT: "3000"
