@@ -38,6 +38,6 @@ func main() {
 	service := services.NewHelloService()
 	bookstore.RegisterBookStoreServiceServer(server, service)
 	reflection.Register(server)
-	log.Println("bookstore service started")
+	fmt.Println("bookstore service started")
 	log.Fatal(server.Serve(l))
 }

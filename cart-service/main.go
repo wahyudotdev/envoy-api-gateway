@@ -38,6 +38,6 @@ func main() {
 	service := services.NewCartService()
 	cart.RegisterCartServiceServer(server, service)
 	reflection.Register(server)
-	log.Println("cart service started")
+	fmt.Println("cart service started")
 	log.Fatal(server.Serve(l))
 }
