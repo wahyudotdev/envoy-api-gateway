@@ -16,7 +16,7 @@ services:
       - ./keys:/keys
 
   bookstore:
-    build: bookstore-service
+    image: wahyudotdev/bookstore-grpc
     environment:
       PORT: 3000
 
@@ -35,6 +35,6 @@ services:
       - ./keys:/keys
 
   cart:
-    build: cart-service
+    image: wahyudotdev/cart-grpc
     environment:
       PORT: 3000
