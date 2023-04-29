@@ -17,5 +17,4 @@ FROM alpine:3.17.2
 
 COPY --from=builder /app/application /application
 
-
 ENTRYPOINT ["./application"]
