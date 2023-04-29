@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CartServiceClient interface {
-	AddToCart(ctx context.Context, in *AddToCartRequest, opts ...grpc.CallOption) (*Item, error)
-	GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*CartList, error)
+	AddToCart(ctx context.Context, in *AddToCartRequest, opts ...grpc.CallOption) (*AddToCartResponse, error)
+	GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*GetCartResponse, error)
 }
 
 type cartServiceClient struct {
@@ -34,8 +34,8 @@ func NewCartServiceClient(cc grpc.ClientConnInterface) CartServiceClient {
 	return &cartServiceClient{cc}
 }
 
-func (c *cartServiceClient) AddToCart(ctx context.Context, in *AddToCartRequest, opts ...grpc.CallOption) (*Item, error) {
-	out := new(Item)
+func (c *cartServiceClient) AddToCart(ctx context.Context, in *AddToCartRequest, opts ...grpc.CallOption) (*AddToCartResponse, error) {
+	out := new(AddToCartResponse)
 	err := c.cc.Invoke(ctx, "/cart.CartService/AddToCart", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,8 +43,8 @@ func (c *cartServiceClient) AddToCart(ctx context.Context, in *AddToCartRequest,
 	return out, nil
 }
 
-func (c *cartServiceClient) GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*CartList, error) {
-	out := new(CartList)
+func (c *cartServiceClient) GetCart(ctx context.Context, in *GetCartRequest, opts ...grpc.CallOption) (*GetCartResponse, error) {
+	out := new(GetCartResponse)
 	err := c.cc.Invoke(ctx, "/cart.CartService/GetCart", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *cartServiceClient) GetCart(ctx context.Context, in *GetCartRequest, opt
 // All implementations must embed UnimplementedCartServiceServer
 // for forward compatibility
 type CartServiceServer interface {
-	AddToCart(context.Context, *AddToCartRequest) (*Item, error)
-	GetCart(context.Context, *GetCartRequest) (*CartList, error)
+	AddToCart(context.Context, *AddToCartRequest) (*AddToCartResponse, error)
+	GetCart(context.Context, *GetCartRequest) (*GetCartResponse, error)
 	mustEmbedUnimplementedCartServiceServer()
 }
 
@@ -65,10 +65,10 @@ type CartServiceServer interface {
 type UnimplementedCartServiceServer struct {
 }
 
-func (UnimplementedCartServiceServer) AddToCart(context.Context, *AddToCartRequest) (*Item, error) {
+func (UnimplementedCartServiceServer) AddToCart(context.Context, *AddToCartRequest) (*AddToCartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddToCart not implemented")
 }
-func (UnimplementedCartServiceServer) GetCart(context.Context, *GetCartRequest) (*CartList, error) {
+func (UnimplementedCartServiceServer) GetCart(context.Context, *GetCartRequest) (*GetCartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCart not implemented")
 }
 func (UnimplementedCartServiceServer) mustEmbedUnimplementedCartServiceServer() {}

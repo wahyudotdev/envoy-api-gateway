@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.5
-// source: bookstore/cart.proto
+// source: bookstore/bookstore.proto
 
 package bookstore
 
@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BookStoreServiceClient interface {
-	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
-	GetBook(ctx context.Context, in *GetBookListRequest, opts ...grpc.CallOption) (*BookList, error)
+	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*CreateBookResponse, error)
+	GetBook(ctx context.Context, in *GetBookListRequest, opts ...grpc.CallOption) (*GetBookListResponse, error)
 }
 
 type bookStoreServiceClient struct {
@@ -34,8 +34,8 @@ func NewBookStoreServiceClient(cc grpc.ClientConnInterface) BookStoreServiceClie
 	return &bookStoreServiceClient{cc}
 }
 
-func (c *bookStoreServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error) {
-	out := new(Book)
+func (c *bookStoreServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*CreateBookResponse, error) {
+	out := new(CreateBookResponse)
 	err := c.cc.Invoke(ctx, "/bookstore.BookStoreService/CreateBook", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,8 +43,8 @@ func (c *bookStoreServiceClient) CreateBook(ctx context.Context, in *CreateBookR
 	return out, nil
 }
 
-func (c *bookStoreServiceClient) GetBook(ctx context.Context, in *GetBookListRequest, opts ...grpc.CallOption) (*BookList, error) {
-	out := new(BookList)
+func (c *bookStoreServiceClient) GetBook(ctx context.Context, in *GetBookListRequest, opts ...grpc.CallOption) (*GetBookListResponse, error) {
+	out := new(GetBookListResponse)
 	err := c.cc.Invoke(ctx, "/bookstore.BookStoreService/GetBook", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *bookStoreServiceClient) GetBook(ctx context.Context, in *GetBookListReq
 // All implementations must embed UnimplementedBookStoreServiceServer
 // for forward compatibility
 type BookStoreServiceServer interface {
-	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
-	GetBook(context.Context, *GetBookListRequest) (*BookList, error)
+	CreateBook(context.Context, *CreateBookRequest) (*CreateBookResponse, error)
+	GetBook(context.Context, *GetBookListRequest) (*GetBookListResponse, error)
 	mustEmbedUnimplementedBookStoreServiceServer()
 }
 
@@ -65,10 +65,10 @@ type BookStoreServiceServer interface {
 type UnimplementedBookStoreServiceServer struct {
 }
 
-func (UnimplementedBookStoreServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
+func (UnimplementedBookStoreServiceServer) CreateBook(context.Context, *CreateBookRequest) (*CreateBookResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
 }
-func (UnimplementedBookStoreServiceServer) GetBook(context.Context, *GetBookListRequest) (*BookList, error) {
+func (UnimplementedBookStoreServiceServer) GetBook(context.Context, *GetBookListRequest) (*GetBookListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBook not implemented")
 }
 func (UnimplementedBookStoreServiceServer) mustEmbedUnimplementedBookStoreServiceServer() {}
@@ -137,5 +137,5 @@ var BookStoreService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "bookstore/cart.proto",
+	Metadata: "bookstore/bookstore.proto",
 }

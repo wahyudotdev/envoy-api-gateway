@@ -1,5 +1,5 @@
 protoc -I ./proto \
-   --descriptor_set_out=api_descriptor.pb \
+   --descriptor_set_out=./envoy/api_descriptor.pb \
    ./proto/bookstore/bookstore.proto \
    ./proto/cart/cart.proto \
    ./proto/google/api/annotations.proto \

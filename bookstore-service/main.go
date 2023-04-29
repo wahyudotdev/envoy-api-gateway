@@ -6,6 +6,7 @@ import (
 	"fmt"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpclogrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -24,6 +25,7 @@ func main() {
 	}
 	server := grpc.NewServer(grpc.UnaryInterceptor(middleware.ChainUnaryServer(
 		grpclogrus.UnaryServerInterceptor(logrusEntry, logrusOpts...),
+		recovery.UnaryServerInterceptor(),
 	)))
 
 	port := os.Getenv("PORT")

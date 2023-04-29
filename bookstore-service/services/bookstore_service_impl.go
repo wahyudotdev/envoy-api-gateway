@@ -18,26 +18,30 @@ func NewHelloService() bookstore.BookStoreServiceServer {
 	return BookStoreServiceImpl{}
 }
 
-func (h BookStoreServiceImpl) CreateBook(ctx context.Context, request *bookstore.CreateBookRequest) (*bookstore.Book, error) {
+func (h BookStoreServiceImpl) CreateBook(ctx context.Context, request *bookstore.CreateBookRequest) (*bookstore.CreateBookResponse, error) {
 
-	md, ok := metadata.FromIncomingContext(ctx)
-	if ok {
-		fmt.Printf("%+v", md)
-	}
+	md, _ := metadata.FromIncomingContext(ctx)
+	uid := md.Get("x-user-id")[0]
 	book := &bookstore.Book{
 		Id:      uuid.New().String(),
 		Title:   request.Title,
 		Content: request.Content,
 	}
-
 	db = append(db, book)
 
-	return book, nil
+	return &bookstore.CreateBookResponse{
+		Message: fmt.Sprintf("success, login as %s", uid),
+		Data:    book,
+	}, nil
 }
 
-func (h BookStoreServiceImpl) GetBook(_ context.Context, _ *bookstore.GetBookListRequest) (*bookstore.BookList, error) {
-	return &bookstore.BookList{
-		List: db,
+func (h BookStoreServiceImpl) GetBook(ctx context.Context, _ *bookstore.GetBookListRequest) (*bookstore.GetBookListResponse, error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	uid := md.Get("x-user-id")[0]
+
+	return &bookstore.GetBookListResponse{
+		Message: fmt.Sprintf("success, login as %s", uid),
+		Data:    db,
 	}, nil
 }
 
