@@ -3,7 +3,9 @@ package services
 import (
 	"bookstore-service/services/bookstore"
 	"context"
+	"fmt"
 	"github.com/google/uuid"
+	"google.golang.org/grpc/metadata"
 )
 
 type BookStoreServiceImpl struct {
@@ -16,7 +18,12 @@ func NewHelloService() bookstore.BookStoreServiceServer {
 	return BookStoreServiceImpl{}
 }
 
-func (h BookStoreServiceImpl) CreateBook(_ context.Context, request *bookstore.CreateBookRequest) (*bookstore.Book, error) {
+func (h BookStoreServiceImpl) CreateBook(ctx context.Context, request *bookstore.CreateBookRequest) (*bookstore.Book, error) {
+
+	md, ok := metadata.FromIncomingContext(ctx)
+	if ok {
+		fmt.Printf("%+v", md)
+	}
 	book := &bookstore.Book{
 		Id:      uuid.New().String(),
 		Title:   request.Title,
