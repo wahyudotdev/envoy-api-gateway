@@ -22,6 +22,7 @@ func (c CartServiceImpl) AddToCart(ctx context.Context, request *cart.AddToCartR
 		Id:      uuid.New().String(),
 		Title:   request.Title,
 		Content: request.Content,
+		OwnerId: uid,
 	}
 	db = append(db, item)
 	return &cart.AddToCartResponse{
@@ -34,9 +35,17 @@ func (c CartServiceImpl) GetCart(ctx context.Context, _ *cart.GetCartRequest) (*
 	md, _ := metadata.FromIncomingContext(ctx)
 	uid := md.Get("x-user-id")[0]
 
+	filtered := make([]*cart.Item, 0)
+
+	for _, d := range db {
+		if d.OwnerId == uid {
+			filtered = append(filtered, d)
+		}
+	}
+
 	return &cart.GetCartResponse{
 		Message: fmt.Sprintf("success, login as %s", uid),
-		Data:    db,
+		Data:    filtered,
 	}, nil
 }
 

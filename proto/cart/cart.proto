@@ -17,6 +17,7 @@ message Item {
   string id = 1;
   string title = 2;
   string content = 3;
+  string owner_id = 4;
 }
 
 message GetCartRequest {

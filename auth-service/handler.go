@@ -2,6 +2,7 @@ package main
 
 import (
 	"auth-service/helper"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"strings"
@@ -76,12 +77,14 @@ func (r AuthHandler) VerifyToken() fiber.Handler {
 }
 
 func init() {
-	pass, _ := helper.HashPassword("admin123")
-	user := User{
-		Id:       uuid.New().String(),
-		Name:     "Admin",
-		Email:    "admin@gmail.com",
-		Password: pass,
+	for i := 1; i < 5; i++ {
+		pass, _ := helper.HashPassword(fmt.Sprintf("user%d", i))
+		user := User{
+			Id:       uuid.New().String(),
+			Name:     fmt.Sprintf("User %d", i),
+			Email:    fmt.Sprintf("user%d@gmail.com", i),
+			Password: pass,
+		}
+		db = append(db, user)
 	}
-	db = append(db, user)
 }
