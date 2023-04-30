@@ -30,6 +30,7 @@ static_resources:
                   - name: envoy.filters.http.grpc_json_transcoder
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+                      # proto descriptor generated using gen-api-descriptor.sh
                       proto_descriptor: "/etc/envoy/api_descriptor.pb"
                       services: [ "bookstore.BookStoreService", "cart.CartService" ]
                       print_options:
@@ -44,10 +45,18 @@ static_resources:
                       providers:
                         auth_provider:
                           local_jwks:
+                            # This is configured inside auth-service/helper/jwt.go
+                            # 'k' is a JWT secret encoded in base64
                             inline_string: '{"keys": [{"kty": "oct", "alg": "HS256", "k": "ZmU5NzY3ZDVkZDk4OTUyNmQ0NjQ4YjBlM2QyMmNjMTc3ZTEzNTZiZg=="}]}'
+
+                          # After JWT validation, it will create a new header called 'x-user-id' that using 'id' value from decoded JWT claims
+                          # We can get these 'x-user-id' value inside gRPC handler using its metadata
                           claim_to_headers:
                             - header_name: x-user-id
                               claim_name: id
+
+                      # Exclude authorization at /v1/auth/*
+                      # Beware that rules order is matter
                       rules:
                         - match: { prefix: "/v1/auth" }
                         - match: { prefix: "/" }
