@@ -10,6 +10,23 @@ static_resources:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: grpc_json
                 codec_type: AUTO
+                local_reply_config:
+                  mappers:
+                    - filter:
+                        status_code_filter:
+                          comparison:
+                            op: EQ
+                            value:
+                              default_value: 401
+                              runtime_key: key_b
+                      headers_to_add:
+                        - header:
+                            key: "content-type"
+                            value: "application/json"
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
+                      status_code: 401
+                      body:
+                        inline_string: '{"error": "unauthorized"}'
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -24,7 +41,6 @@ static_resources:
                           route: { cluster: bookstore-service, timeout: 60s }
                         - match: { prefix: "/cart.CartService" }
                           route: { cluster: cart-service, timeout: 60s }
-
                 http_filters:
 
                   - name: envoy.filters.http.grpc_json_transcoder
@@ -54,6 +70,8 @@ static_resources:
                           claim_to_headers:
                             - header_name: x-user-id
                               claim_name: id
+                            - header_name: x-token-exp
+                              claim_name: exp
 
                       # Exclude authorization at /v1/auth/*
                       # Beware that rules order is matter
@@ -62,7 +80,19 @@ static_resources:
                         - match: { prefix: "/" }
                           requires:
                             provider_name: auth_provider
-
+                  - name: envoy.lua
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+                      inline_code: |
+                        function envoy_on_request(request_handle)
+                          local token = request_handle:headers():get("x-token-exp")
+                          if token then
+                            local expiration = tonumber(token)
+                            if expiration and expiration < os.time() then
+                              request_handle:respond({[":status"] = "401"})
+                            end
+                          end
+                        end
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router

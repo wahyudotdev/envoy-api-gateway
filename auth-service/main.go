@@ -21,10 +21,6 @@ func main() {
 		port = "3000"
 	}
 	handler := NewAuthHandler()
-	group := app.Group("/v1/auth")
-	{
-		group.Post("/login", handler.Login())
-		group.Get("/verify", handler.VerifyToken())
-	}
+	app.Post("/v1/auth/login", handler.Login())
 	log.Fatalln(app.Listen(fmt.Sprintf(":%s", port)))
 }

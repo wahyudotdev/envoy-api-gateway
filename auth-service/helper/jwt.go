@@ -10,9 +10,9 @@ const jwtSecret = "fe9767d5dd989526d4648b0e3d22cc177e1356bf"
 
 func SignJwt(id string) (string, error) {
 
-	duration := time.Hour * 1
+	duration := time.Minute
 	sign := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
-		"exp": time.Now().Add(duration).UnixMilli(),
+		"exp": time.Now().Add(duration).Unix(),
 		"id":  id,
 	})
 
@@ -41,7 +41,7 @@ func ParseJwt(token string) (jwt.MapClaims, error) {
 	}
 
 	exp := claims["exp"].(float64)
-	if time.Now().UnixMilli() > int64(exp) {
+	if time.Now().Unix() > int64(exp) {
 		return nil, errors.New("expired token")
 	}
 	return claims, nil

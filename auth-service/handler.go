@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"strings"
 )
 
 type AuthHandler struct {
@@ -50,28 +49,6 @@ func (r AuthHandler) Login() fiber.Handler {
 
 		return c.Status(fiber.StatusUnauthorized).JSON(Response{
 			Error: "invalid username or password",
-		})
-	}
-}
-
-func (r AuthHandler) VerifyToken() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		token := c.Get("Authorization")
-		if strings.Contains(token, "Bearer") {
-			t := strings.Split(token, " ")[1]
-			d, err := helper.ParseJwt(t)
-			if err != nil {
-				return c.Status(fiber.StatusUnauthorized).JSON(Response{
-					Error: err.Error(),
-				})
-			}
-			return c.JSON(Response{
-				Message: "success",
-				Data:    d,
-			})
-		}
-		return c.Status(fiber.StatusBadRequest).JSON(Response{
-			Error: "invalid token",
 		})
 	}
 }
