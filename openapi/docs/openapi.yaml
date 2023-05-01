@@ -97,6 +97,11 @@ paths:
         - Cart
       security:
         - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddToCartRequest"
       responses:
         '200':
           description: 'success'
