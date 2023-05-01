@@ -25,3 +25,9 @@ pass : user2
 2. Import proto/bookstore/bookstore.proto and proto/cart/cart.proto with postman
 3. Choose desired endpoint and go to authorization tab
 4. Paste token with **Bearer Token** type
+
+
+### Development Notes
+- Install protobuf compiler and go plugins for the protobuf compiler, you can follow this guide https://grpc.io/docs/languages/go/quickstart/
+- Execute gen-api-descriptor.sh to regenerate the protobuf descriptor that needed by Envoy
+- Execute gen-proto.sh to regenerate the gRPC server stub
