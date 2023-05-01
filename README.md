@@ -5,7 +5,7 @@
 docker-compose up --build
 ```
 
-### Testing HTTP Endpint
+### Testing HTTP Endpoint
 Just Open the OpenAPI docs at http://localhost:8080/v1/docs/
 
 ### Testing gRPC Endpoint
