@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"log"
 	"os"
@@ -11,9 +10,6 @@ import (
 
 func main() {
 	app := fiber.New()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-	}))
 	app.Use(logger.New())
 
 	port := os.Getenv("PORT")
