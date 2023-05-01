@@ -43,6 +43,8 @@ static_resources:
                         # Reference: https://envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/grpc_json_transcoder_filter#route-configs-for-transcoded-requests
                         - match: { prefix: "/v1/auth" }
                           route: { cluster: auth-service, timeout: 60s }
+                        - match: { prefix: "/v1/docs" }
+                          route: { cluster: openapi-docs, timeout: 60s }
                         - match: { prefix: "/bookstore.BookStoreService" }
                           route: { cluster: bookstore-service, timeout: 60s }
                         - match: { prefix: "/cart.CartService" }
@@ -93,6 +95,7 @@ static_resources:
                       # Beware that rules order is matter
                       rules:
                         - match: { prefix: "/v1/auth" }
+                        - match: { prefix: "/v1/docs"}
                         - match: { prefix: "/" }
                           requires:
                             provider_name: auth_provider
@@ -163,4 +166,18 @@ static_resources:
                   address:
                     socket_address:
                       address: cart-service
+                      port_value: 3000
+
+    - name: openapi-docs
+      type: LOGICAL_DNS
+      lb_policy: ROUND_ROBIN
+      dns_lookup_family: V4_ONLY
+      load_assignment:
+        cluster_name: auth-service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: openapi-docs
                       port_value: 3000

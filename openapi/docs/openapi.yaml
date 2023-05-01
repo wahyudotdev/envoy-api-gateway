@@ -1,0 +1,204 @@
+openapi: "3.0.2"
+info:
+  title: Envoy API-Gateway Demo
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/v1
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/User"
+                      token:
+                        type: string
+  /books:
+    get:
+      tags:
+        - Bookstore
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Book"
+
+    post:
+      tags:
+        - Bookstore
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequest"
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Book"
+
+  /carts:
+    get:
+      tags:
+        - Cart
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Item"
+    post:
+      tags:
+        - Cart
+      security:
+        - JWTAuth: []
+      responses:
+        '200':
+          description: 'success'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Response"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Item"
+
+components:
+  schemas:
+    Response:
+      type: object
+      properties:
+        message:
+          type: string
+        error:
+          type: string
+        data:
+          type: object
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: 'user1@gmail.com'
+        password:
+          type: string
+          format: password
+          example: 'user1'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '0da9f259-14ed-44cd-94bb-7ec32312e558'
+        email:
+          type: string
+          example: 'user1@gmail.com'
+        name:
+          type: string
+          example: 'User 1'
+
+    CreateBookRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Title'
+        content:
+          type: string
+          example: 'Content'
+
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '031e5e07-a04e-404e-bea3-f1b2dbd0363a'
+        title:
+          type: string
+          example: 'Book Title'
+        content:
+          type: string
+          example: 'Book Content'
+        owner_id:
+          type: string
+          example: '0da9f259-14ed-44cd-94bb-7ec32312e558'
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '031e5e07-a04e-404e-bea3-f1b2dbd0363a'
+        title:
+          type: string
+          example: 'Book Title'
+        content:
+          type: string
+          example: 'Book Content'
+        owner_id:
+          type: string
+          example: '0da9f259-14ed-44cd-94bb-7ec32312e558'
+
+    AddToCartRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Book Title'
+        content:
+          type: string
+          example: 'Book Content'
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

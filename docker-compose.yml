@@ -26,3 +26,8 @@ services:
     build: auth-service
     environment:
       PORT: "3000"
+
+  openapi-docs:
+    build: openapi
+    environment:
+      PORT: "3000"
