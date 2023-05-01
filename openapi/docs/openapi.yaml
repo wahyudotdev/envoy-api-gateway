@@ -198,10 +198,10 @@ components:
       properties:
         title:
           type: string
-          example: 'Book Title'
+          example: 'Item'
         content:
           type: string
-          example: 'Book Content'
+          example: 'Content'
   securitySchemes:
     JWTAuth:
       type: http
