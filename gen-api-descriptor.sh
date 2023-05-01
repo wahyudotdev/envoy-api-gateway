@@ -8,5 +8,4 @@ protoc -I ./proto \
    ./proto/cart/cart.proto \
    ./proto/google/api/annotations.proto \
    ./proto/google/api/http.proto \
-   ./proto/google/protobuf/descriptor.proto \
-   ./proto/google/api/field_behavior.proto
+   ./proto/google/protobuf/descriptor.proto

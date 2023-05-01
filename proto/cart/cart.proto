@@ -2,7 +2,6 @@ syntax = "proto3";
 package cart;
 option go_package = "services/cart";
 import "google/api/annotations.proto";
-import "google/api/field_behavior.proto";
 
 message AddToCartRequest {
   string title = 1;
@@ -18,7 +17,7 @@ message Item {
   string id = 1;
   string title = 2;
   string content = 3;
-  string owner_id = 4 [(google.api.field_behavior) = IMMUTABLE, json_name = "owner_id"];
+  string owner_id = 4;
 }
 
 message GetCartRequest {
