@@ -1,4 +1,4 @@
-## Envoy API-Gateway Demo
+## Envoy API-Gateway Demo With RBAC
 
 ### Deployment
 ```bash
@@ -14,10 +14,20 @@ Just Open the OpenAPI docs at http://localhost:8080/v1/docs/
 User 1
 email : user1@gmail.com
 pass : user1
+roles :
+- book:read
+- cart:read
+- cart:write
 
 User 2
 email : user2@gmail.com
 pass : user2
+roles :
+- book:read
+- book:write
+- cart:read
+- cart:write
+
 ```
 
 ### Trying Out gRPC Endpoint

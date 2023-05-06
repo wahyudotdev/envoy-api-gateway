@@ -2,7 +2,6 @@ package main
 
 import (
 	"auth-service/helper"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -33,7 +32,7 @@ func (r AuthHandler) Login() fiber.Handler {
 						Error: "invalid username or password",
 					})
 				}
-				token, err := helper.SignJwt(d.Id)
+				token, err := helper.SignJwt(d.Id, d.Roles)
 				if err != nil {
 					return c.Status(fiber.StatusUnauthorized).JSON(Response{
 						Error: err.Error(),
@@ -54,14 +53,23 @@ func (r AuthHandler) Login() fiber.Handler {
 }
 
 func init() {
-	for i := 1; i < 5; i++ {
-		pass, _ := helper.HashPassword(fmt.Sprintf("user%d", i))
-		user := User{
-			Id:       uuid.New().String(),
-			Name:     fmt.Sprintf("User %d", i),
-			Email:    fmt.Sprintf("user%d@gmail.com", i),
-			Password: pass,
-		}
-		db = append(db, user)
+	uPass1, _ := helper.HashPassword("user1")
+	u1 := User{
+		Id:       uuid.New().String(),
+		Name:     "User 1",
+		Email:    "user1@gmail.com",
+		Password: uPass1,
+		Roles:    []string{"book:read", "cart:read", "cart:write"},
 	}
+	db = append(db, u1)
+
+	uPass2, _ := helper.HashPassword("user2")
+	u2 := User{
+		Id:       uuid.New().String(),
+		Name:     "User 2",
+		Email:    "user2@gmail.com",
+		Password: uPass2,
+		Roles:    []string{"book:read", "book:write", "cart:read", "cart:write"},
+	}
+	db = append(db, u2)
 }

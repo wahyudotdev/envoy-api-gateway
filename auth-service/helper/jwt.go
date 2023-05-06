@@ -3,17 +3,19 @@ package helper
 import (
 	"errors"
 	"github.com/golang-jwt/jwt"
+	"strings"
 	"time"
 )
 
 const jwtSecret = "fe9767d5dd989526d4648b0e3d22cc177e1356bf"
 
-func SignJwt(id string) (string, error) {
+func SignJwt(id string, roles []string) (string, error) {
 
-	duration := time.Minute
+	duration := time.Minute * 60
 	sign := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), jwt.MapClaims{
-		"exp": time.Now().Add(duration).Unix(),
-		"id":  id,
+		"exp":   time.Now().Add(duration).Unix(),
+		"id":    id,
+		"roles": strings.Join(roles, ","),
 	})
 
 	token, err := sign.SignedString([]byte(jwtSecret))

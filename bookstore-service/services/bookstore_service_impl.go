@@ -40,17 +40,9 @@ func (h BookStoreServiceImpl) GetBook(ctx context.Context, _ *bookstore.GetBookL
 	md, _ := metadata.FromIncomingContext(ctx)
 	uid := md.Get("x-user-id")[0]
 
-	filtered := make([]*bookstore.Book, 0)
-
-	for _, d := range db {
-		if d.OwnerId == uid {
-			filtered = append(filtered, d)
-		}
-	}
-
 	return &bookstore.GetBookListResponse{
 		Message: fmt.Sprintf("success, login as %s", uid),
-		Data:    filtered,
+		Data:    db,
 	}, nil
 }
 

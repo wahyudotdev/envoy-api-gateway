@@ -1,3 +1,71 @@
+!ignore allow_no_roles: &allow_no_roles
+  envoy.filters.http.rbac:
+    "@type": type.googleapis.com/envoy.extensions.filters.http.rbac.v3.RBACPerRoute
+    rbac:
+      rules:
+        action: ALLOW
+        policies:
+          general-rules:
+            permissions:
+              - any: true
+            principals:
+              - any: true
+
+!ignore book_roles: &book_roles
+  envoy.filters.http.rbac:
+    "@type": type.googleapis.com/envoy.extensions.filters.http.rbac.v3.RBACPerRoute
+    rbac:
+      rules:
+        action: ALLOW
+        policies:
+          book-writer:
+            permissions:
+              - and_rules:
+                  rules:
+                    - header:
+                        name: "x-user-roles"
+                        string_match:
+                          contains: "book:write"
+                    - url_path:
+                        path: { prefix: "/bookstore.BookStoreService/CreateBook" }
+            principals:
+              - any: true
+          book-reader:
+            permissions:
+              - and_rules:
+                  rules:
+                    - header:
+                        name: "x-user-roles"
+                        string_match:
+                          contains: "book:read"
+                    - url_path:
+                        path: { prefix: "/bookstore.BookStoreService/GetBook" }
+            principals:
+              - any: true
+
+!ignore cart_roles: &cart_roles
+  envoy.filters.http.rbac:
+    "@type": type.googleapis.com/envoy.extensions.filters.http.rbac.v3.RBACPerRoute
+    rbac:
+      rules:
+        action: ALLOW
+        policies:
+          cart-read-write:
+            permissions:
+              - and_rules:
+                  rules:
+                    - header:
+                        name: "x-user-roles"
+                        string_match:
+                          contains: "cart:write"
+              - and_rules:
+                  rules:
+                    - header:
+                        name: "x-user-roles"
+                        string_match:
+                          contains: "cart:read"
+            principals:
+              - any: true
 admin:
   access_log_path: /dev/null
   address:
@@ -32,7 +100,22 @@ static_resources:
                           append_action: OVERWRITE_IF_EXISTS_OR_ADD
                       status_code: 401
                       body:
-                        inline_string: '{"error": "unauthorized"}'
+                        inline_string: '{"error": "invalid token"}'
+                    - filter:
+                        status_code_filter:
+                          comparison:
+                            op: EQ
+                            value:
+                              default_value: 403
+                              runtime_key: key_b
+                      headers_to_add:
+                        - header:
+                            key: "content-type"
+                            value: "application/json"
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
+                      status_code: 403
+                      body:
+                        inline_string: '{"error": "access denied"}'
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -43,12 +126,20 @@ static_resources:
                         # Reference: https://envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/grpc_json_transcoder_filter#route-configs-for-transcoded-requests
                         - match: { prefix: "/v1/auth" }
                           route: { cluster: auth-service, timeout: 60s }
+                          typed_per_filter_config:
+                            *allow_no_roles
                         - match: { prefix: "/v1/docs" }
                           route: { cluster: openapi-docs, timeout: 60s }
+                          typed_per_filter_config:
+                            *allow_no_roles
                         - match: { prefix: "/bookstore.BookStoreService" }
                           route: { cluster: bookstore-service, timeout: 60s }
+                          typed_per_filter_config:
+                            *book_roles
                         - match: { prefix: "/cart.CartService" }
                           route: { cluster: cart-service, timeout: 60s }
+                          typed_per_filter_config:
+                            *cart_roles
                       cors:
                         allow_origin_string_match:
                           - safe_regex:
@@ -90,12 +181,13 @@ static_resources:
                               claim_name: id
                             - header_name: x-token-exp
                               claim_name: exp
-
+                            - header_name: x-user-roles
+                              claim_name: roles
                       # Exclude authorization at /v1/auth/*
                       # Beware that rules order is matter
                       rules:
                         - match: { prefix: "/v1/auth" }
-                        - match: { prefix: "/v1/docs"}
+                        - match: { prefix: "/v1/docs" }
                         - match: { prefix: "/" }
                           requires:
                             provider_name: auth_provider
@@ -112,6 +204,17 @@ static_resources:
                             end
                           end
                         end
+                  - name: envoy.filters.http.rbac
+                    typed_config:
+                      '@type': type.googleapis.com/envoy.extensions.filters.http.rbac.v3.RBAC
+                      rules:
+                        action: DENY
+                        policies:
+                          'default':
+                            permissions:
+                              - any: true
+                            principals:
+                              - any: true
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
