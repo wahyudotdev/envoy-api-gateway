@@ -9,7 +9,6 @@ services:
     volumes:
       - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
       - ./envoy/api_descriptor.pb:/etc/envoy/api_descriptor.pb
-      - ./envoy/rbac.yaml:/etc/envoy/rbac.yaml
     command: [ "envoy", "-c", "/etc/envoy/envoy.yaml", "--log-level", "debug" ]
 
   bookstore-service:
